@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, type FormEvent } from "react";
@@ -60,7 +61,7 @@ export default function AdvisorPage() {
         <p className="text-muted-foreground">Get personalized financial advice powered by AI.</p>
       </header>
 
-      <Card className="shadow-lg">
+      <Card className="shadow-lg card-hover-animation">
         <CardHeader>
           <CardTitle>Tell Us About Yourself</CardTitle>
           <CardDescription>The more details you provide, the better the advice.</CardDescription>
@@ -106,7 +107,7 @@ export default function AdvisorPage() {
 
       {adviceResult && (
         <div className="space-y-6 mt-8">
-          <Card className="shadow-md border-l-4 border-primary">
+          <Card className="shadow-md border-l-4 border-primary card-hover-animation">
             <CardHeader className="flex flex-row items-center gap-3">
               <Lightbulb className="h-8 w-8 text-primary" />
               <CardTitle className="text-2xl">Personalized Advice</CardTitle>
@@ -116,7 +117,7 @@ export default function AdvisorPage() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-md border-l-4 border-green-500">
+          <Card className="shadow-md border-l-4 border-green-500 card-hover-animation">
             <CardHeader className="flex flex-row items-center gap-3">
               <DollarSign className="h-8 w-8 text-green-500" />
               <CardTitle className="text-2xl">Investment Suggestions</CardTitle>
@@ -126,7 +127,7 @@ export default function AdvisorPage() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-md border-l-4 border-blue-500">
+          <Card className="shadow-md border-l-4 border-blue-500 card-hover-animation">
             <CardHeader className="flex flex-row items-center gap-3">
               <BookOpen className="h-8 w-8 text-blue-500" />
               <CardTitle className="text-2xl">Budgeting Tips</CardTitle>

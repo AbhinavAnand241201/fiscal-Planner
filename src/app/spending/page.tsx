@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, type FormEvent } from "react";
@@ -76,7 +77,9 @@ export default function SpendingPage() {
 
     setDescription("");
     setAmount("");
-    setCategory("");
+    // Reset category based on type, or to first in list
+    const currentCats = type === 'expense' ? spendingCategories : incomeCategories;
+    setCategory(currentCats.length > 0 ? currentCats[0] : "");
     // setDate(new Date().toISOString().split('T')[0]); // Keep date or reset
     toast({
       title: "Transaction Added",
@@ -97,12 +100,15 @@ export default function SpendingPage() {
   const currentCategories = type === 'expense' ? spendingCategories : incomeCategories;
   useEffect(() => {
     if (currentCategories.length > 0) {
-      setCategory(currentCategories[0]);
+        // If the current category isn't valid for the new type, reset it
+        if (!currentCategories.includes(category)) {
+            setCategory(currentCategories[0]);
+        }
     } else {
       setCategory("");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type]);
+  }, [type, category]); // Rerun when type or category changes, ensure category is valid for type.
 
 
   return (
@@ -112,7 +118,7 @@ export default function SpendingPage() {
         <p className="text-muted-foreground">Log and manage your income and expenses.</p>
       </header>
 
-      <Card className="shadow-lg">
+      <Card className="shadow-lg card-hover-animation">
         <CardHeader>
           <CardTitle>Add New Transaction</CardTitle>
         </CardHeader>
@@ -125,7 +131,7 @@ export default function SpendingPage() {
               </div>
               <div>
                 <Label htmlFor="amount">Amount</Label>
-                <Input id="amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g., 25.50" required />
+                <Input id="amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g., 25.50" required step="0.01" min="0.01" />
               </div>
             </div>
 
@@ -167,7 +173,7 @@ export default function SpendingPage() {
         </CardContent>
       </Card>
 
-      <Card className="shadow-lg">
+      <Card className="shadow-lg card-hover-animation">
         <CardHeader>
           <CardTitle>Recent Transactions</CardTitle>
           <CardDescription>
@@ -189,11 +195,11 @@ export default function SpendingPage() {
               </TableHeader>
               <TableBody>
                 {transactions.length > 0 ? transactions.map((t) => (
-                  <TableRow key={t.id} className={t.type === 'income' ? 'bg-green-50 hover:bg-green-100' : 'bg-red-50 hover:bg-red-100'}>
+                  <TableRow key={t.id} className={`${t.type === 'income' ? 'bg-green-500/10 hover:bg-green-500/20 dark:bg-green-700/20 dark:hover:bg-green-700/30' : 'bg-red-500/10 hover:bg-red-500/20 dark:bg-red-700/20 dark:hover:bg-red-700/30'} transition-colors duration-150`}>
                     <TableCell>{new Date(t.date).toLocaleDateString()}</TableCell>
                     <TableCell className="font-medium">{t.description}</TableCell>
                     <TableCell>{t.category}</TableCell>
-                    <TableCell className={`text-right font-semibold ${t.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                    <TableCell className={`text-right font-semibold ${t.type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                       {t.type === 'income' ? '+' : '-'}${t.amount.toFixed(2)}
                     </TableCell>
                     <TableCell className="text-right">

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, type FormEvent } from "react";
@@ -145,7 +146,7 @@ export default function BudgetsPage() {
         <p className="text-muted-foreground">Set spending limits and track your progress.</p>
       </header>
 
-      <Card className="shadow-lg">
+      <Card className="shadow-lg card-hover-animation">
         <CardHeader>
           <CardTitle>{isEditing ? "Edit Budget" : "Create New Budget"}</CardTitle>
         </CardHeader>
@@ -198,7 +199,7 @@ export default function BudgetsPage() {
         </CardContent>
       </Card>
 
-      <Card className="shadow-lg">
+      <Card className="shadow-lg card-hover-animation">
         <CardHeader>
           <CardTitle>Your Budgets</CardTitle>
           <CardDescription>
@@ -211,7 +212,7 @@ export default function BudgetsPage() {
             const percentageSpent = budget.limit > 0 ? (budget.spent / budget.limit) * 100 : 0;
             const isOverBudget = budget.spent > budget.limit;
             return (
-              <Card key={budget.id} className={`p-4 ${isOverBudget ? 'border-destructive bg-destructive/10' : ''}`}>
+              <Card key={budget.id} className={`p-4 card-hover-animation ${isOverBudget ? 'border-destructive bg-destructive/10' : ''}`}>
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="text-lg font-semibold">{budget.category} <span className="text-sm text-muted-foreground">({budget.period})</span></h3>

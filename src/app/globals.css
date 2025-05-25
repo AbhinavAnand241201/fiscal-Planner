@@ -46,56 +46,55 @@
 
     --chart-1: 231 48% 48%; /* Primary */
     --chart-2: 174 100% 29.2%; /* Accent */
-    --chart-3: 30 80% 55%; 
+    --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
 
   .dark {
-    /* Define dark theme if needed, for now, focusing on light theme as per proposal */
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    --background: 240 10% 3.9%; /* Dark Gray */
+    --foreground: 0 0% 98%; /* Light Gray for text */
 
-    --card: 240 10% 3.9%;
+    --card: 240 5% 10%; /* Darker Card Background */
     --card-foreground: 0 0% 98%;
 
-    --popover: 240 10% 3.9%;
+    --popover: 240 5% 8%; /* Dark Popover */
     --popover-foreground: 0 0% 98%;
 
-    --primary: 231 48% 55%; /* Adjusted primary for dark */
-    --primary-foreground: 0 0% 100%;
+    --primary: 231 55% 65%; /* Lighter Blue for Dark Mode */
+    --primary-foreground: 240 10% 3.9%; /* Dark text on Lighter Blue */
 
-    --secondary: 231 48% 20%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 231 30% 25%; /* Darker shade of primary */
+    --secondary-foreground: 0 0% 95%; /* Light text on secondary */
 
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
+    --muted: 240 5% 18%; /* Darker Muted */
+    --muted-foreground: 0 0% 60%; /* Lighter Muted Text */
 
-    --accent: 174 100% 35%; /* Adjusted accent for dark */
-    --accent-foreground: 0 0% 100%;
+    --accent: 174 80% 40%; /* Adjusted Teal for Dark Mode */
+    --accent-foreground: 0 0% 98%; /* Light text on Accent */
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 70% 50%; /* Adjusted Destructive Red */
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 231 48% 55%;
+    --border: 240 5% 20%; /* Darker Border */
+    --input: 240 5% 15%; /* Darker Input Background */
+    --ring: 231 55% 65%; /* Lighter Blue for focus rings */
 
     /* Sidebar dark theme (already dark, can be same or adjusted) */
-    --sidebar-background: 222 47% 11%;
+    --sidebar-background: 222 47% 9%; /* Slightly darker sidebar */
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 210 40% 98%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 222 47% 22%;
+    --sidebar-primary-foreground: 222 47% 9%;
+    --sidebar-accent: 222 47% 20%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 47% 18%;
+    --sidebar-border: 222 47% 15%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    --chart-1: 231 48% 55%;
-    --chart-2: 174 100% 35%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --chart-1: 231 55% 65%;
+    --chart-2: 174 80% 40%;
+    --chart-3: 30 70% 65%;
+    --chart-4: 280 60% 70%;
+    --chart-5: 340 70% 65%;
   }
 }
 
@@ -105,5 +104,13 @@
   }
   body {
     @apply bg-background text-foreground;
+    @apply transition-colors duration-300; /* Added for smooth theme transition */
+  }
+  /* Add subtle hover animations to cards */
+  .card-hover-animation {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  .card-hover-animation:hover {
+    @apply shadow-xl scale-[1.02];
   }
 }

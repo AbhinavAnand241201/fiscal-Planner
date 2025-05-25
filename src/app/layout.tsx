@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -25,7 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // Add 'dark' class here if you want to force dark mode,
+    // or implement a theme switcher to toggle it.
+    // For system preference, Next.js themes or a simple script can be used.
+    // For now, it will respect system preference if .dark class is applied to html tag by a script or manually.
+    <html lang="en" className=""> 
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

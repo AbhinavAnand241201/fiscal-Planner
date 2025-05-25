@@ -1,10 +1,11 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, TrendingUp, PieChart as PieChartIcon, PiggyBank } from "lucide-react";
+import { ArrowRight, TrendingUp, PiggyBank } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import type { ChartDataPoint } from "@/types";
 
@@ -25,7 +26,7 @@ const MOCK_SPENDING_TREND_DATA: ChartDataPoint[] = [
   { name: 'Jun', value: 1300 },
 ];
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']; // These will be picked up by theme if not overridden by chart specific colors
 
 export default function DashboardPage() {
   const [currentDate, setCurrentDate] = useState('');
@@ -42,7 +43,7 @@ export default function DashboardPage() {
       </header>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <Card className="shadow-lg card-hover-animation">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Monthly Budget Progress</CardTitle>
             <PiggyBank className="h-5 w-5 text-muted-foreground" />
@@ -57,7 +58,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <Card className="shadow-lg card-hover-animation">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Recent Spending Alert</CardTitle>
             <TrendingUp className="h-5 w-5 text-muted-foreground" />
@@ -71,7 +72,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
         
-        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 md:col-span-2 lg:col-span-1">
+        <Card className="shadow-lg card-hover-animation md:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">AI Financial Tip</CardTitle>
             <SparklesIcon className="h-5 w-5 text-muted-foreground" />
@@ -86,7 +87,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <Card className="shadow-lg card-hover-animation">
           <CardHeader>
             <CardTitle>Spending by Category (Monthly)</CardTitle>
             <CardDescription>Overview of your expenses this month.</CardDescription>
@@ -100,22 +101,26 @@ export default function DashboardPage() {
                   cy="50%"
                   labelLine={false}
                   outerRadius={100}
-                  fill="#8884d8"
+                  fill="hsl(var(--chart-1))" /* Use theme variable */
                   dataKey="value"
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
                   {MOCK_BUDGET_DATA.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                     <Cell key={`cell-${index}`} fill={`hsl(var(--chart-${(index % 5) + 1}))`} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number, name: string) => [`$${value.toFixed(2)}`, name]} />
+                <Tooltip 
+                  formatter={(value: number, name: string) => [`$${value.toFixed(2)}`, name]}
+                  contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)' }}
+                  itemStyle={{ color: 'hsl(var(--foreground))' }}
+                 />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <Card className="shadow-lg card-hover-animation">
           <CardHeader>
             <CardTitle>Spending Trend (Last 6 Months)</CardTitle>
             <CardDescription>Your spending habits over time.</CardDescription>
@@ -123,19 +128,23 @@ export default function DashboardPage() {
           <CardContent className="h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={MOCK_SPENDING_TREND_DATA}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis tickFormatter={(value) => `$${value}`} />
-                <Tooltip formatter={(value: number) => [`$${value.toFixed(2)}`, "Spending"]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))"/>
+                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />
+                <YAxis tickFormatter={(value) => `$${value}`} stroke="hsl(var(--muted-foreground))" />
+                <Tooltip 
+                  formatter={(value: number) => [`$${value.toFixed(2)}`, "Spending"]}
+                  contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)' }}
+                  itemStyle={{ color: 'hsl(var(--foreground))' }}
+                />
                 <Legend />
-                <Bar dataKey="value" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <Card className="shadow-lg card-hover-animation">
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>
         </CardHeader>

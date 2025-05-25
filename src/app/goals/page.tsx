@@ -153,7 +153,7 @@ export default function GoalsPage() {
         <p className="text-muted-foreground">Set, track, and achieve your financial milestones.</p>
       </header>
 
-      <Card className="shadow-lg">
+      <Card className="shadow-lg card-hover-animation">
         <CardHeader>
           <CardTitle>{isEditing ? "Edit Goal" : "Create New Goal"}</CardTitle>
         </CardHeader>
@@ -213,7 +213,7 @@ export default function GoalsPage() {
         </CardContent>
       </Card>
 
-      <Card className="shadow-lg">
+      <Card className="shadow-lg card-hover-animation">
         <CardHeader>
           <CardTitle>Your Goals</CardTitle>
           <CardDescription>Overview of your financial aspirations.</CardDescription>
@@ -227,7 +227,7 @@ export default function GoalsPage() {
             const isComplete = current >= target;
 
             return (
-              <Card key={goal.id} className={`p-4 ${isOverdue ? 'border-destructive bg-destructive/10' : ''} ${isComplete ? 'border-green-500 bg-green-500/10' : ''}`}>
+              <Card key={goal.id} className={`p-4 card-hover-animation ${isOverdue ? 'border-destructive bg-destructive/10' : ''} ${isComplete ? 'border-green-500 bg-green-500/10' : ''}`}>
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="text-lg font-semibold">{goal.description}</h3>
@@ -283,4 +283,3 @@ export default function GoalsPage() {
     </div>
   );
 }
-
