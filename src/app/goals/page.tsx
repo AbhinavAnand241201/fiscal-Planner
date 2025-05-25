@@ -19,7 +19,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  // AlertDialogTrigger, // Removed as it's not used correctly here
 } from "@/components/ui/alert-dialog";
 import type { FinancialGoal } from "@/types";
 import { PlusCircle, Edit3, Trash2, CalendarIcon, AlertTriangle, Goal as GoalIcon } from "lucide-react";
@@ -240,11 +240,13 @@ export default function GoalsPage() {
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(goal)} aria-label="Edit goal" disabled={isComplete}>
                       <Edit3 className="h-4 w-4" />
                     </Button>
-                    <AlertDialogTrigger asChild>
-                       <Button variant="ghost" size="icon" onClick={() => setDeleteGoalId(goal.id)} aria-label="Delete goal">
-                         <Trash2 className="h-4 w-4 text-destructive" />
-                       </Button>
-                    </AlertDialogTrigger>
+                    {/* 
+                      Removed AlertDialogTrigger here. The Button's onClick now directly sets 
+                      the state to open the AlertDialog defined below.
+                    */}
+                     <Button variant="ghost" size="icon" onClick={() => setDeleteGoalId(goal.id)} aria-label="Delete goal">
+                       <Trash2 className="h-4 w-4 text-destructive" />
+                     </Button>
                   </div>
                 </div>
                 <Progress value={Math.min(percentage, 100)} className={`mt-2 h-3 ${isOverdue ? '[&>div]:bg-destructive' : ''} ${isComplete ? '[&>div]:bg-green-500' : ''}`} />
@@ -283,3 +285,5 @@ export default function GoalsPage() {
     </div>
   );
 }
+
+    
