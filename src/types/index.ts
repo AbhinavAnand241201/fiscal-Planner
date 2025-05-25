@@ -20,9 +20,9 @@ export interface Budget {
 export interface FinancialGoal {
   id: string;
   description: string;
-  targetAmount?: number;
+  targetAmount: number; // Made required as per feature description
   currentAmount?: number;
-  deadline?: string; // ISO string
+  deadline?: string | null; // ISO string or null if not set
 }
 
 export type SpendingData = {
