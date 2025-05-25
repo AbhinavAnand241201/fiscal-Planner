@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Lightbulb, DollarSign, Target, TrendingUp, Calendar } from "lucide-react";
 import { provideFinancialAdvice, type FinancialAdviceInput, type FinancialAdviceOutput } from "@/ai/flows/provide-financial-advice";
 import { useToast } from "@/hooks/use-toast";
-import { ErrorBoundary } from "@/components/error-boundary";
+import ErrorBoundary from "@/components/error-boundary";
 
 interface AdvisorFormProps {
   onSubmit: (input: FinancialAdviceInput) => Promise<void>;
@@ -93,100 +93,77 @@ interface FinancialPlanProps {
 }
 
 function FinancialPlan({ adviceResult }: FinancialPlanProps) {
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'High': return 'bg-red-500';
-      case 'Medium': return 'bg-yellow-500';
-      case 'Low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+  const getPriorityColor = (priority: string): "default" | "destructive" | "secondary" => {
+    switch (priority.toLowerCase()) {
+      case "high":
+        return "destructive";
+      case "medium":
+        return "secondary";
+      default:
+        return "default";
     }
   };
 
   return (
-    <div className="space-y-8">
-      {/* Summary Card */}
-      <Card className="shadow-md border-l-4 border-primary">
+    <div className="space-y-6">
+      <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Lightbulb className="h-6 w-6 text-primary" />
-            Key Findings
-          </CardTitle>
+          <CardTitle>Summary</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-lg">{adviceResult.summary}</p>
+          <p className="text-muted-foreground">{adviceResult.summary}</p>
         </CardContent>
       </Card>
 
-      {/* Tabs for different sections */}
-      <Tabs defaultValue="spending" className="space-y-4">
+      <Tabs defaultValue="spending" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="spending">Spending Analysis</TabsTrigger>
           <TabsTrigger value="actions">Action Steps</TabsTrigger>
-          <TabsTrigger value="investments">Investment Plan</TabsTrigger>
+          <TabsTrigger value="investment">Investment Plan</TabsTrigger>
           <TabsTrigger value="progress">Progress Tracking</TabsTrigger>
         </TabsList>
 
-        {/* Spending Analysis Tab */}
-        <TabsContent value="spending" className="space-y-4">
+        <TabsContent value="spending">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-6 w-6 text-green-500" />
-                Spending Analysis
-              </CardTitle>
+              <CardTitle>Spending Analysis</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {adviceResult.spendingAnalysis.categories.map((category, index) => (
                   <div key={index} className="space-y-2">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between">
                       <span className="font-medium">{category.category}</span>
-                      <Badge variant={category.percentageChange > 0 ? "destructive" : "default"}>
-                        {category.percentageChange > 0 ? "+" : ""}{category.percentageChange}%
-                      </Badge>
+                      <span className="text-muted-foreground">
+                        ${category.currentAmount} → ${category.recommendedAmount}
+                      </span>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Current: ${category.currentAmount}</p>
-                        <Progress value={(category.currentAmount / category.recommendedAmount) * 100} />
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Recommended: ${category.recommendedAmount}</p>
-                        <Progress value={100} className="bg-green-100" />
-                      </div>
-                    </div>
+                    <Progress value={category.percentageChange} className="h-2" />
+                    <p className="text-sm text-muted-foreground">
+                      {category.percentageChange > 0 ? "Increase" : "Decrease"} by {Math.abs(category.percentageChange)}%
+                    </p>
                   </div>
                 ))}
-                <div className="mt-6 p-4 bg-muted rounded-lg">
-                  <pre className="whitespace-pre-wrap font-mono text-sm">
-                    {adviceResult.spendingAnalysis.visualization}
-                  </pre>
-                </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Action Steps Tab */}
-        <TabsContent value="actions" className="space-y-4">
+        <TabsContent value="actions">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-6 w-6 text-blue-500" />
-                Action Steps
-              </CardTitle>
+              <CardTitle>Action Steps</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {adviceResult.actionSteps.map((step, index) => (
-                  <div key={index} className="flex gap-4 p-4 border rounded-lg">
-                    <div className={`w-2 rounded-full ${getPriorityColor(step.priority)}`} />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-semibold">Step {step.step}: {step.title}</h3>
-                        <Badge variant="outline">{step.timeline}</Badge>
-                      </div>
-                      <p className="text-muted-foreground mt-1">{step.description}</p>
+                  <div key={index} className="flex items-start gap-4">
+                    <Badge variant={getPriorityColor(step.priority)} className="mt-1">
+                      {step.priority}
+                    </Badge>
+                    <div>
+                      <h4 className="font-medium">{step.title}</h4>
+                      <p className="text-sm text-muted-foreground">{step.description}</p>
                     </div>
                   </div>
                 ))}
@@ -195,89 +172,70 @@ function FinancialPlan({ adviceResult }: FinancialPlanProps) {
           </Card>
         </TabsContent>
 
-        {/* Investment Plan Tab */}
-        <TabsContent value="investments" className="space-y-4">
+        <TabsContent value="investment">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-6 w-6 text-purple-500" />
-                Investment Plan
-              </CardTitle>
+              <CardTitle>Investment Plan</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-semibold mb-2">Short-term Investments</h3>
-                  <div className="space-y-2">
+                  <h3 className="font-medium mb-2">Short-term Investments</h3>
+                  <div className="space-y-4">
                     {adviceResult.investmentPlan.shortTerm.map((investment, index) => (
-                      <div key={index} className="p-3 border rounded-lg">
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium">{investment.type}</span>
-                          <span className="text-green-600">${investment.amount}</span>
+                      <div key={index} className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">{investment.type}</p>
+                          <p className="text-sm text-muted-foreground">{investment.reason}</p>
                         </div>
-                        <p className="text-sm text-muted-foreground mt-1">{investment.reason}</p>
+                        <span className="font-medium">${investment.amount}</span>
                       </div>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-2">Long-term Investments</h3>
-                  <div className="space-y-2">
+                  <h3 className="font-medium mb-2">Long-term Investments</h3>
+                  <div className="space-y-4">
                     {adviceResult.investmentPlan.longTerm.map((investment, index) => (
-                      <div key={index} className="p-3 border rounded-lg">
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium">{investment.type}</span>
-                          <span className="text-green-600">${investment.amount}</span>
+                      <div key={index} className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">{investment.type}</p>
+                          <p className="text-sm text-muted-foreground">{investment.reason}</p>
                         </div>
-                        <p className="text-sm text-muted-foreground mt-1">{investment.reason}</p>
+                        <span className="font-medium">${investment.amount}</span>
                       </div>
                     ))}
                   </div>
-                </div>
-                <div className="mt-6 p-4 bg-muted rounded-lg">
-                  <pre className="whitespace-pre-wrap font-mono text-sm">
-                    {adviceResult.investmentPlan.visualization}
-                  </pre>
                 </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Progress Tracking Tab */}
-        <TabsContent value="progress" className="space-y-4">
+        <TabsContent value="progress">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-6 w-6 text-orange-500" />
-                Progress Tracking
-              </CardTitle>
+              <CardTitle>Progress Tracking</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {adviceResult.progressTracking.milestones.map((milestone, index) => (
                   <div key={index} className="space-y-2">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between">
                       <span className="font-medium">{milestone.milestone}</span>
-                      <span className="text-sm text-muted-foreground">{milestone.targetDate}</span>
+                      <span className="text-muted-foreground">
+                        Target: ${milestone.targetAmount} by {milestone.targetDate}
+                      </span>
                     </div>
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-sm">
-                        <span>${milestone.currentAmount}</span>
-                        <span>${milestone.targetAmount}</span>
-                      </div>
-                      <Progress 
-                        value={(milestone.currentAmount / milestone.targetAmount) * 100} 
-                        className="h-2"
-                      />
-                    </div>
+                    <Progress 
+                      value={(milestone.currentAmount / milestone.targetAmount) * 100} 
+                      className="h-2" 
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      Current: ${milestone.currentAmount} ({(milestone.currentAmount / milestone.targetAmount * 100).toFixed(1)}% of target)
+                    </p>
                   </div>
                 ))}
-                <div className="mt-6 p-4 bg-muted rounded-lg">
-                  <pre className="whitespace-pre-wrap font-mono text-sm">
-                    {adviceResult.progressTracking.visualization}
-                  </pre>
-                </div>
               </div>
             </CardContent>
           </Card>
