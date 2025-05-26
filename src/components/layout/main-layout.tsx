@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from 'next/navigation';
-import type React from "react";
+import React from "react"; // Changed from "import type React from "react";"
 import {
   SidebarProvider,
   Sidebar,
