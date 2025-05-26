@@ -70,13 +70,13 @@ export default function LandingPage() {
           </div>
           <div className="mt-16 relative">
             <Image
-              src="https://placehold.co/1200x600.png?text=App+Screenshot+Dashboard"
+              src="https://placehold.co/1200x600.png"
               alt="Fiscal Compass Dashboard"
               width={1200}
               height={600}
               className="rounded-xl shadow-2xl mx-auto border-4 border-accent/30"
               priority
-              data-ai-hint="dashboard finance app"
+              data-ai-hint="finance app dashboard"
             />
             <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-accent/20 rounded-full blur-2xl animate-blob animation-delay-2000"></div>
             <div className="absolute -top-8 -right-8 w-32 h-32 bg-primary/30 rounded-full blur-2xl animate-blob animation-delay-4000"></div>
@@ -125,9 +125,9 @@ export default function LandingPage() {
           <h2 className="text-4xl font-bold text-center mb-12 text-primary">Get Started in 3 Simple Steps</h2>
           <div className="grid md:grid-cols-3 gap-8 md:gap-12 items-start">
             {[
-              { step: 1, title: "Sign Up & Connect", description: "Create your account in minutes. Optionally link bank accounts for automated tracking (mock feature).", icon: Users, dataAiHint: "user profile" },
-              { step: 2, title: "Set Your Goals", description: "Define your budgets and financial aspirations. Tell us what you're working towards.", icon: ShieldCheck, dataAiHint: "financial planning" },
-              { step: 3, title: "Track & Optimize", description: "Log spending, get AI insights, and watch your financial health improve.", icon: ArrowRight, dataAiHint: "progress chart" },
+              { step: 1, title: "Sign Up & Connect", description: "Create your account in minutes. Optionally link bank accounts for automated tracking (mock feature).", icon: Users, dataAiHint: "user profile setup" },
+              { step: 2, title: "Set Your Goals", description: "Define your budgets and financial aspirations. Tell us what you're working towards.", icon: ShieldCheck, dataAiHint: "financial planning secure" },
+              { step: 3, title: "Track & Optimize", description: "Log spending, get AI insights, and watch your financial health improve.", icon: ArrowRight, dataAiHint: "progress chart arrow" },
             ].map((item) => (
               <div key={item.step} className="text-center p-6 bg-card rounded-lg shadow-lg card-hover-animation">
                 <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent text-accent-foreground text-2xl font-bold">
@@ -151,9 +151,9 @@ export default function LandingPage() {
           <h2 className="text-4xl font-bold text-center mb-12 text-primary">Loved by Users</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { name: "Sarah L.", quote: "Fiscal Compass helped me finally understand where my money goes. The AI advisor is a game-changer!", avatarHint: "woman smiling" },
-              { name: "Mike B.", quote: "Setting and tracking budgets used to be a chore. Now it's simple and motivating. Highly recommend!", avatarHint: "man working" },
-              { name: "Jessica P.", quote: "I've achieved two of my financial goals faster than I thought possible, thanks to this app!", avatarHint: "person happy" },
+              { name: "Sarah L.", quote: "Fiscal Compass helped me finally understand where my money goes. The AI advisor is a game-changer!", avatarHint: "woman smiling professional" },
+              { name: "Mike B.", quote: "Setting and tracking budgets used to be a chore. Now it's simple and motivating. Highly recommend!", avatarHint: "man working laptop" },
+              { name: "Jessica P.", quote: "I've achieved two of my financial goals faster than I thought possible, thanks to this app!", avatarHint: "person happy success" },
             ].map((testimonial, index) => (
               <Card key={index} className="bg-card shadow-lg p-6 card-hover-animation">
                 <CardContent className="flex flex-col items-center text-center">
@@ -239,10 +239,10 @@ function LogoIcon(props: React.SVGProps<SVGSVGElement>) {
       {...props}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      fill="currentColor" // Changed to fill for solid color
-      stroke="none"    // No stroke for solid fill
+      fill="currentColor" 
+      stroke="none"    
     >
-      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path> {/* Simplified compass-like shape */}
+      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
     </svg>
   );
 }

@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Loader2, Lightbulb, DollarSign, BookOpen, CheckCircle, Info } from "lucide-react";
+import { Loader2, Lightbulb, DollarSign, CheckCircle, Info, MessageSquareQuote } from "lucide-react";
 import { provideFinancialAdvice, type FinancialAdviceInput, type FinancialAdviceOutput } from "@/ai/flows/provide-financial-advice";
 import { useToast } from "@/hooks/use-toast";
 
@@ -59,7 +59,7 @@ export default function AdvisorPage() {
     <div className="space-y-8">
       <header>
         <h1 className="text-3xl font-bold">AI Financial Advisor</h1>
-        <p className="text-muted-foreground">Get personalized financial advice powered by AI.</p>
+        <p className="text-muted-foreground">Get personalized financial advice powered by AI. Break down complex goals into simple steps.</p>
       </header>
 
       <Card className="shadow-lg card-hover-animation">
@@ -134,16 +134,16 @@ export default function AdvisorPage() {
                 <CardTitle className="text-2xl">Actionable Advice</CardTitle>
               </CardHeader>
               <CardContent>
-                <Accordion type="single" collapsible className="w-full">
+                <Accordion type="single" collapsible className="w-full" defaultValue={`item-0`}>
                   {adviceResult.actionableAdvice.map((section, index) => (
                     <AccordionItem value={`item-${index}`} key={index}>
-                      <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+                      <AccordionTrigger className="text-xl font-semibold hover:no-underline">
                         {section.title}
                       </AccordionTrigger>
                       <AccordionContent>
-                        <ul className="list-disc space-y-2 pl-5 text-base">
+                        <ul className="list-disc space-y-3 pl-5 text-base">
                           {section.points.map((point, pIndex) => (
-                            <li key={pIndex} className="leading-relaxed">{point}</li>
+                            <li key={pIndex} className="leading-relaxed whitespace-pre-wrap">{point}</li>
                           ))}
                         </ul>
                       </AccordionContent>
@@ -161,9 +161,9 @@ export default function AdvisorPage() {
                 <CardTitle className="text-2xl">{adviceResult.investmentSuggestions.title || "Investment Suggestions"}</CardTitle>
               </CardHeader>
               <CardContent>
-                 <ul className="list-disc space-y-2 pl-5 text-base">
+                 <ul className="list-disc space-y-3 pl-5 text-base">
                     {adviceResult.investmentSuggestions.points.map((point, pIndex) => (
-                      <li key={pIndex} className="leading-relaxed">{point}</li>
+                      <li key={pIndex} className="leading-relaxed whitespace-pre-wrap">{point}</li>
                     ))}
                   </ul>
               </CardContent>
@@ -173,13 +173,13 @@ export default function AdvisorPage() {
           {adviceResult.keyTakeaways && adviceResult.keyTakeaways.length > 0 && (
             <Card className="shadow-md border-l-4 border-blue-500 card-hover-animation">
               <CardHeader className="flex flex-row items-center gap-3">
-                <CheckCircle className="h-8 w-8 text-blue-500" />
-                <CardTitle className="text-2xl">Key Takeaways</CardTitle>
+                <MessageSquareQuote className="h-8 w-8 text-blue-500" />
+                <CardTitle className="text-2xl">Key Takeaways & Quotes</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3">
                   {adviceResult.keyTakeaways.map((takeaway, index) => (
-                    <li key={index} className="text-base italic leading-relaxed p-3 bg-blue-500/10 rounded-md">
+                    <li key={index} className="text-base italic leading-relaxed p-4 bg-blue-500/10 rounded-lg shadow">
                       "{takeaway}"
                     </li>
                   ))}

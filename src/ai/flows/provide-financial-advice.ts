@@ -21,15 +21,15 @@ const FinancialAdviceInputSchema = z.object({
 export type FinancialAdviceInput = z.infer<typeof FinancialAdviceInputSchema>;
 
 const AdviceSectionSchema = z.object({
-  title: z.string().describe("A concise title for this section of advice."),
-  points: z.array(z.string()).describe("A list of actionable advice points or tips, presented as individual strings.")
+  title: z.string().describe("A concise title for this section of advice. Make it engaging!"),
+  points: z.array(z.string()).describe("A list of actionable advice points. Present these as short, distinct bullet points or numbered steps. Avoid long paragraphs. Start with an impactful statement or quote if relevant.")
 });
 
 const FinancialAdviceOutputSchema = z.object({
-  overallSummary: z.string().describe("A brief, encouraging summary of the financial situation and potential."),
-  actionableAdvice: z.array(AdviceSectionSchema).describe("Structured advice broken down into sections, each with a title and a list of specific points. For example, one section for budgeting, another for debt, another for savings."),
-  investmentSuggestions: AdviceSectionSchema.optional().describe("A section with a title and list of general investment ideas or principles, if applicable. Keep it general, do not give specific stock advice."),
-  keyTakeaways: z.array(z.string()).describe("A short list of 2-3 most important takeaways or quotes for the user to remember.")
+  overallSummary: z.string().describe("A brief, encouraging summary of the financial situation and potential. Keep it concise and motivational."),
+  actionableAdvice: z.array(AdviceSectionSchema).describe("Structured advice broken down into sections. Each section should have a clear, engaging title and a list of specific points (formatted as steps or short bullets)."),
+  investmentSuggestions: AdviceSectionSchema.optional().describe("A section with a title and list of general investment ideas or principles, if applicable. Keep it general, do not give specific stock advice. Use short points."),
+  keyTakeaways: z.array(z.string()).describe("A short list of 2-3 most important takeaways or motivational quotes for the user to remember. Each takeaway should be concise.")
 });
 export type FinancialAdviceOutput = z.infer<typeof FinancialAdviceOutputSchema>;
 
@@ -41,8 +41,8 @@ const prompt = ai.definePrompt({
   name: 'provideFinancialAdvicePrompt',
   input: {schema: FinancialAdviceInputSchema},
   output: {schema: FinancialAdviceOutputSchema},
-  prompt: `You are a friendly and insightful Personal Financial Advisor.
-Your goal is to provide clear, actionable, and encouraging financial advice to the user.
+  prompt: `You are a friendly, insightful, and highly engaging Personal Financial Advisor.
+Your goal is to provide clear, actionable, and encouraging financial advice that is easy to understand and act upon.
 Analyze the user's spending patterns and financial goals provided below.
 
 Spending Patterns:
@@ -51,12 +51,25 @@ Spending Patterns:
 Financial Goals:
 {{{financialGoals}}}
 
-Please structure your response according to the output schema.
-For 'actionableAdvice', create distinct sections for different themes (e.g., "Budgeting Strategies", "Debt Management", "Savings Boosters"). Each section should have a clear title and a list of specific, actionable points.
-For 'investmentSuggestions', if relevant, provide general ideas or principles, not specific financial product recommendations.
-For 'keyTakeaways', provide 2-3 concise and motivational points or short quotes.
-Be positive and empowering in your tone.
-Generate the output in the specified JSON format.
+IMPORTANT INSTRUCTIONS FOR YOUR RESPONSE:
+- Structure your response STRICTLY according to the output schema.
+- For 'overallSummary', provide a brief, positive, and motivational overview.
+- For 'actionableAdvice':
+    - Create distinct sections for different themes (e.g., "Budgeting Breakthroughs", "Debt Demolition Plan", "Savings Supercharge").
+    - Each section MUST have an engaging 'title'.
+    - For 'points' within each section:
+        - Present advice as a series of SHORT, distinct bullet points or NUMBERED STEPS.
+        - AVOID long paragraphs. Each point should be easily digestible.
+        - If a section involves a process, break it into clear, sequential steps (e.g., "1. Step one description. 2. Step two description.").
+        - Consider starting a section or a point with an impactful (but brief) quote or a strong statement if it makes the advice more engaging.
+- For 'investmentSuggestions' (if relevant):
+    - Provide general ideas or principles, NOT specific financial product recommendations.
+    - Use short, easy-to-understand points.
+- For 'keyTakeaways':
+    - List 2-3 concise and motivational key messages or short, memorable quotes.
+- Your tone should be positive, empowering, and clear. Imagine you're guiding a friend.
+- DO NOT use complex financial jargon without simple explanations.
+- Ensure the output is in the specified JSON format.
 `,
 });
 
@@ -80,4 +93,3 @@ const provideFinancialAdviceFlow = ai.defineFlow(
     };
   }
 );
-
