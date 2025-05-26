@@ -1,5 +1,9 @@
+
+import type { User as FirebaseUser } from 'firebase/auth';
+
 export interface Transaction {
-  id: string;
+  id: string; // Firestore document ID
+  userId?: string; // To associate with Firebase User UID
   date: string; // ISO string
   description: string;
   amount: number;
@@ -8,19 +12,21 @@ export interface Transaction {
 }
 
 export interface Budget {
-  id: string;
+  id: string; // Firestore document ID
+  userId?: string;
   category: string;
   limit: number;
-  spent: number; // Calculated from transactions
+  spent: number; // This might be calculated on the fly or stored and updated
   period: 'weekly' | 'monthly' | 'yearly';
   startDate?: string; // ISO string, for tracking specific periods
   endDate?: string; // ISO string
 }
 
 export interface FinancialGoal {
-  id: string;
+  id: string; // Firestore document ID
+  userId?: string;
   description: string;
-  targetAmount: number; // Made required as per feature description
+  targetAmount: number;
   currentAmount?: number;
   deadline?: string | null; // ISO string or null if not set
 }
@@ -36,3 +42,6 @@ export type ChartDataPoint = {
   value: number;
   fill?: string;
 };
+
+// Re-export Firebase User type for convenience if needed elsewhere
+export type User = FirebaseUser;
