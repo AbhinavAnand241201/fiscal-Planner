@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, BarChart2, ShieldCheck, Lightbulb, Users, Zap, TrendingUp, PiggyBank, Goal as GoalIconLucide, Compass } from "lucide-react";
+import { ArrowRight, ShieldCheck, Lightbulb, Users, Zap, TrendingUp, PiggyBank, Goal as GoalIconLucide, Compass, Activity } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -50,7 +50,7 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-background via-muted to-background text-foreground">
       {/* Hero Section */}
-      <section id="hero-section" className="py-20 md:py-32 bg-primary text-primary-foreground opacity-0 transition-opacity duration-1000 ease-in-out">
+      <section id="hero-section" className="py-20 md:py-32 bg-gradient-to-br from-primary via-blue-700 to-primary-foreground/10 text-primary-foreground opacity-0 transition-opacity duration-1000 ease-in-out">
         <div className="container mx-auto px-6 text-center">
           <div className="max-w-3xl mx-auto">
             <Compass className="h-20 w-20 mx-auto mb-6 text-accent animate-pulse" />
@@ -67,8 +67,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="mt-16 relative flex items-center justify-center">
-            {/* Placeholder for a large dashboard-like icon or graphic */}
-            <BarChart2 className="h-64 w-64 text-accent/30 opacity-50" data-ai-hint="finance app dashboard" />
+            <TrendingUp className="h-64 w-64 text-accent/30 opacity-60" data-ai-hint="financial growth chart" />
             <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-accent/20 rounded-full blur-2xl animate-blob animation-delay-2000"></div>
             <div className="absolute -top-8 -right-8 w-32 h-32 bg-primary/30 rounded-full blur-2xl animate-blob animation-delay-4000"></div>
           </div>
@@ -84,16 +83,16 @@ export default function LandingPage() {
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { icon: PiggyBank, title: "Smart Budgeting", description: "Visualize weekly, monthly, and yearly budgets with clear progress.", dataAiHint: "piggy bank savings" },
-              { icon: Lightbulb, title: "AI Financial Advisor", description: "Personalized advice based on your spending and goals, powered by Gemini.", dataAiHint: "idea lightbulb" },
-              { icon: TrendingUp, title: "Spending Tracker", description: "Automatically track and categorize your expenses with ease.", dataAiHint: "analytics chart" },
-              { icon: GoalIconLucide, title: "Goal Setting", description: "Define and track your financial goals, from saving for a vacation to a down payment.", dataAiHint: "target goal" },
-              { icon: Zap, title: "Budget Alerts", description: "Customized limits to prevent overspending with real-time alerts.", dataAiHint: "notification bell" },
-              { icon: BarChart2, title: "Interactive Visualizations", description: "Understand your data with beautiful, interactive charts and graphs.", dataAiHint: "data visualization" },
+              { icon: PiggyBank, title: "Smart Budgeting", description: "Visualize weekly, monthly, and yearly budgets with clear progress.", dataAiHint: "piggy bank savings", iconColor: "text-green-500", bgColor: "bg-green-500/10" },
+              { icon: Lightbulb, title: "AI Financial Advisor", description: "Personalized advice based on your spending and goals, powered by Gemini.", dataAiHint: "idea lightbulb", iconColor: "text-yellow-500", bgColor: "bg-yellow-500/10" },
+              { icon: Activity, title: "Spending Tracker", description: "Automatically track and categorize your expenses with ease.", dataAiHint: "analytics chart", iconColor: "text-blue-500", bgColor: "bg-blue-500/10" },
+              { icon: GoalIconLucide, title: "Goal Setting", description: "Define and track your financial goals, from saving for a vacation to a down payment.", dataAiHint: "target goal", iconColor: "text-purple-500", bgColor: "bg-purple-500/10" },
+              { icon: Zap, title: "Budget Alerts", description: "Customized limits to prevent overspending with real-time alerts.", dataAiHint: "notification bell", iconColor: "text-red-500", bgColor: "bg-red-500/10" },
+              { icon: ShieldCheck, title: "Secure & Private", description: "Your financial data is encrypted and securely managed.", dataAiHint: "security shield", iconColor: "text-teal-500", bgColor: "bg-teal-500/10" },
             ].map((feature, index) => (
               <Card key={index} className="bg-card shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 card-hover-animation">
                 <CardHeader className="flex flex-col items-center text-center gap-4 pb-2">
-                  <div className="p-4 rounded-full bg-primary/10 text-primary">
+                  <div className={`p-4 rounded-full ${feature.bgColor} ${feature.iconColor}`}>
                     <feature.icon className="h-12 w-12" />
                   </div>
                   <CardTitle className="text-xl font-semibold">{feature.title}</CardTitle>
@@ -113,9 +112,9 @@ export default function LandingPage() {
           <h2 className="text-4xl font-bold text-center mb-12 text-primary">Get Started in 3 Simple Steps</h2>
           <div className="grid md:grid-cols-3 gap-8 md:gap-12 items-start">
             {[
-              { step: 1, title: "Sign Up & Connect", description: "Create your account in minutes. Securely manage your financial data.", icon: Users, dataAiHint: "user profile setup" },
-              { step: 2, title: "Set Your Goals", description: "Define your budgets and financial aspirations. Tell us what you're working towards.", icon: ShieldCheck, dataAiHint: "financial planning secure" },
-              { step: 3, title: "Track & Optimize", description: "Log spending, get AI insights, and watch your financial health improve.", icon: ArrowRight, dataAiHint: "progress chart arrow" },
+              { step: 1, title: "Sign Up", description: "Create your account in minutes. It's fast, free, and secure.", icon: UserPlus, dataAiHint: "user profile setup" },
+              { step: 2, title: "Set Your Goals", description: "Define your budgets and financial aspirations. Tell us what you're working towards.", icon: Target, dataAiHint: "financial planning secure" },
+              { step: 3, title: "Track & Optimize", description: "Log spending, get AI insights, and watch your financial health improve.", icon: TrendingUp, dataAiHint: "progress chart arrow" },
             ].map((item) => (
               <div key={item.step} className="text-center p-6 bg-card rounded-lg shadow-lg card-hover-animation flex flex-col items-center">
                 <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent text-accent-foreground text-2xl font-bold">
@@ -138,13 +137,13 @@ export default function LandingPage() {
           <h2 className="text-4xl font-bold text-center mb-12 text-primary">Loved by Users</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { name: "Sarah L.", quote: "Fiscal Compass helped me finally understand where my money goes. The AI advisor is a game-changer!", avatarHint: "woman smiling professional" },
-              { name: "Mike B.", quote: "Setting and tracking budgets used to be a chore. Now it's simple and motivating. Highly recommend!", avatarHint: "man working laptop" },
-              { name: "Jessica P.", quote: "I've achieved two of my financial goals faster than I thought possible, thanks to this app!", avatarHint: "person happy success" },
+              { name: "Sarah L.", quote: "Fiscal Compass helped me finally understand where my money goes. The AI advisor is a game-changer!", avatarHint: "woman smiling professional", icon: Users },
+              { name: "Mike B.", quote: "Setting and tracking budgets used to be a chore. Now it's simple and motivating. Highly recommend!", avatarHint: "man working laptop", icon: Users },
+              { name: "Jessica P.", quote: "I've achieved two of my financial goals faster than I thought possible, thanks to this app!", avatarHint: "person happy success", icon: Users },
             ].map((testimonial, index) => (
               <Card key={index} className="bg-card shadow-lg p-6 card-hover-animation">
                 <CardContent className="flex flex-col items-center text-center">
-                  <Users className="h-16 w-16 rounded-full mb-4 border-2 border-primary p-2 text-primary" data-ai-hint={testimonial.avatarHint} /> {/* User icon */}
+                  <testimonial.icon className="h-16 w-16 rounded-full mb-4 border-2 border-primary p-2 text-primary" data-ai-hint={testimonial.avatarHint} />
                   <p className="text-muted-foreground italic mb-4">"{testimonial.quote}"</p>
                   <p className="font-semibold text-primary">- {testimonial.name}</p>
                 </CardContent>
@@ -155,13 +154,13 @@ export default function LandingPage() {
       </section>
 
       {/* Call to Action Section */}
-      <section id="cta-section" className="py-20 md:py-32 bg-gradient-to-r from-primary to-blue-700 text-primary-foreground opacity-0 transition-opacity duration-1000 ease-in-out delay-800">
+      <section id="cta-section" className="py-20 md:py-32 bg-gradient-to-r from-accent to-teal-600 text-accent-foreground opacity-0 transition-opacity duration-1000 ease-in-out delay-800">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Master Your Money?</h2>
-          <p className="text-xl md:text-2xl mb-10 max-w-2xl mx-auto text-primary-foreground/90">
+          <p className="text-xl md:text-2xl mb-10 max-w-2xl mx-auto text-accent-foreground/90">
             Join Fiscal Compass today and start your journey towards financial empowerment.
           </p>
-          <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xl py-4 px-10 rounded-full shadow-xl transform hover:scale-105 transition-transform" asChild>
+          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground text-xl py-4 px-10 rounded-full shadow-xl transform hover:scale-105 transition-transform" asChild>
             <Link href={user ? "/spending" : "/auth"}>Sign Up For Free <ArrowRight className="ml-2 h-6 w-6" /></Link>
           </Button>
         </div>
@@ -218,3 +217,4 @@ export default function LandingPage() {
     </div>
   );
 }
+
