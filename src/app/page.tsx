@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, Lightbulb, Users, Zap, TrendingUp, PiggyBank, Goal as GoalIconLucide, Compass, Activity } from "lucide-react";
+import { ArrowRight, ShieldCheck, Lightbulb, Users, Zap, TrendingUp, PiggyBank, Goal as GoalIconLucide, Compass, Activity, UserPlus, Target } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -53,7 +53,7 @@ export default function LandingPage() {
       <section id="hero-section" className="py-20 md:py-32 bg-gradient-to-br from-primary via-blue-700 to-primary-foreground/10 text-primary-foreground opacity-0 transition-opacity duration-1000 ease-in-out">
         <div className="container mx-auto px-6 text-center">
           <div className="max-w-3xl mx-auto">
-            <Compass className="h-20 w-20 mx-auto mb-6 text-accent animate-pulse" />
+            <TrendingUp className="h-20 w-20 mx-auto mb-6 text-accent animate-pulse" data-ai-hint="financial growth chart" />
             <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
               Navigate Your Financial Future with <span className="text-accent">Fiscal Compass</span>
             </h1>
@@ -67,7 +67,8 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="mt-16 relative flex items-center justify-center">
-            <TrendingUp className="h-64 w-64 text-accent/30 opacity-60" data-ai-hint="financial growth chart" />
+             {/* Replaced BarChart2 with TrendingUp for a more dynamic financial growth visual */}
+            <TrendingUp className="h-64 w-64 text-accent/30 opacity-60" data-ai-hint="financial growth chart abstract" />
             <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-accent/20 rounded-full blur-2xl animate-blob animation-delay-2000"></div>
             <div className="absolute -top-8 -right-8 w-32 h-32 bg-primary/30 rounded-full blur-2xl animate-blob animation-delay-4000"></div>
           </div>
@@ -143,7 +144,10 @@ export default function LandingPage() {
             ].map((testimonial, index) => (
               <Card key={index} className="bg-card shadow-lg p-6 card-hover-animation">
                 <CardContent className="flex flex-col items-center text-center">
-                  <testimonial.icon className="h-16 w-16 rounded-full mb-4 border-2 border-primary p-2 text-primary" data-ai-hint={testimonial.avatarHint} />
+                  {/* Using generic Users icon for testimonials as specific avatars are out of scope */}
+                  <div className="p-3 rounded-full bg-accent/10 text-accent inline-block mb-4">
+                    <testimonial.icon className="h-16 w-16" data-ai-hint={testimonial.avatarHint} />
+                  </div>
                   <p className="text-muted-foreground italic mb-4">"{testimonial.quote}"</p>
                   <p className="font-semibold text-primary">- {testimonial.name}</p>
                 </CardContent>
