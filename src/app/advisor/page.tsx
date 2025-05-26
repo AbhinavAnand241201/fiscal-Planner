@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, Lightbulb, DollarSign, BookOpen } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Loader2, Lightbulb, DollarSign, BookOpen, CheckCircle, Info } from "lucide-react";
 import { provideFinancialAdvice, type FinancialAdviceInput, type FinancialAdviceOutput } from "@/ai/flows/provide-financial-advice";
 import { useToast } from "@/hooks/use-toast";
 
@@ -64,7 +65,7 @@ export default function AdvisorPage() {
       <Card className="shadow-lg card-hover-animation">
         <CardHeader>
           <CardTitle>Tell Us About Yourself</CardTitle>
-          <CardDescription>The more details you provide, the better the advice.</CardDescription>
+          <CardDescription>The more details you provide, the better the advice. Be specific with amounts and categories for spending, and clear about your goals.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -74,7 +75,7 @@ export default function AdvisorPage() {
                 id="spendingPatterns"
                 value={spendingPatterns}
                 onChange={(e) => setSpendingPatterns(e.target.value)}
-                placeholder="Describe your typical monthly spending. E.g., 'I spend $500 on rent, $300 on groceries, $100 on dining out, $50 on subscriptions...'"
+                placeholder="E.g., 'Monthly spending: Rent $1200, Groceries $450, Transport $150, Dining Out $250, Subscriptions (Netflix, Spotify) $30, Gym $50. I also spend about $100 on hobbies.'"
                 rows={5}
                 className="mt-1 text-base"
                 required
@@ -86,7 +87,7 @@ export default function AdvisorPage() {
                 id="financialGoals"
                 value={financialGoals}
                 onChange={(e) => setFinancialGoals(e.target.value)}
-                placeholder="What are your financial goals? E.g., 'Save for a down payment on a house in 5 years, pay off student loans, build an emergency fund...'"
+                placeholder="E.g., '1. Save $10,000 for a house down payment in 2 years. 2. Pay off $3,000 in credit card debt (18% APR) within 1 year. 3. Build a 3-month emergency fund ($6,000).'"
                 rows={5}
                 className="mt-1 text-base"
                 required
@@ -105,37 +106,87 @@ export default function AdvisorPage() {
         </CardContent>
       </Card>
 
-      {adviceResult && (
+      {isLoading && (
+        <Card className="shadow-md mt-8">
+          <CardContent className="pt-6 text-center">
+            <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
+            <p className="text-lg text-muted-foreground">Our AI is crafting your personalized advice... this might take a moment.</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {adviceResult && !isLoading && (
         <div className="space-y-6 mt-8">
           <Card className="shadow-md border-l-4 border-primary card-hover-animation">
             <CardHeader className="flex flex-row items-center gap-3">
-              <Lightbulb className="h-8 w-8 text-primary" />
-              <CardTitle className="text-2xl">Personalized Advice</CardTitle>
+              <Info className="h-8 w-8 text-primary" />
+              <CardTitle className="text-2xl">Overall Summary</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-base leading-relaxed whitespace-pre-wrap">{adviceResult.advice}</p>
+              <p className="text-base leading-relaxed whitespace-pre-wrap">{adviceResult.overallSummary}</p>
             </CardContent>
           </Card>
 
-          <Card className="shadow-md border-l-4 border-green-500 card-hover-animation">
-            <CardHeader className="flex flex-row items-center gap-3">
-              <DollarSign className="h-8 w-8 text-green-500" />
-              <CardTitle className="text-2xl">Investment Suggestions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-base leading-relaxed whitespace-pre-wrap">{adviceResult.investmentSuggestions}</p>
-            </CardContent>
-          </Card>
+          {adviceResult.actionableAdvice && adviceResult.actionableAdvice.length > 0 && (
+            <Card className="shadow-md border-l-4 border-accent card-hover-animation">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <Lightbulb className="h-8 w-8 text-accent" />
+                <CardTitle className="text-2xl">Actionable Advice</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {adviceResult.actionableAdvice.map((section, index) => (
+                    <AccordionItem value={`item-${index}`} key={index}>
+                      <AccordionTrigger className="text-lg font-semibold hover:no-underline">
+                        {section.title}
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="list-disc space-y-2 pl-5 text-base">
+                          {section.points.map((point, pIndex) => (
+                            <li key={pIndex} className="leading-relaxed">{point}</li>
+                          ))}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+          )}
 
-          <Card className="shadow-md border-l-4 border-blue-500 card-hover-animation">
-            <CardHeader className="flex flex-row items-center gap-3">
-              <BookOpen className="h-8 w-8 text-blue-500" />
-              <CardTitle className="text-2xl">Budgeting Tips</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-base leading-relaxed whitespace-pre-wrap">{adviceResult.budgetingTips}</p>
-            </CardContent>
-          </Card>
+          {adviceResult.investmentSuggestions && adviceResult.investmentSuggestions.points.length > 0 && (
+            <Card className="shadow-md border-l-4 border-green-500 card-hover-animation">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <DollarSign className="h-8 w-8 text-green-500" />
+                <CardTitle className="text-2xl">{adviceResult.investmentSuggestions.title || "Investment Suggestions"}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                 <ul className="list-disc space-y-2 pl-5 text-base">
+                    {adviceResult.investmentSuggestions.points.map((point, pIndex) => (
+                      <li key={pIndex} className="leading-relaxed">{point}</li>
+                    ))}
+                  </ul>
+              </CardContent>
+            </Card>
+          )}
+
+          {adviceResult.keyTakeaways && adviceResult.keyTakeaways.length > 0 && (
+            <Card className="shadow-md border-l-4 border-blue-500 card-hover-animation">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <CheckCircle className="h-8 w-8 text-blue-500" />
+                <CardTitle className="text-2xl">Key Takeaways</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {adviceResult.keyTakeaways.map((takeaway, index) => (
+                    <li key={index} className="text-base italic leading-relaxed p-3 bg-blue-500/10 rounded-md">
+                      "{takeaway}"
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
         </div>
       )}
     </div>

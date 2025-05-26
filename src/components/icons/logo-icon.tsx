@@ -1,3 +1,4 @@
+
 import type React from 'react';
 
 interface LogoIconProps extends React.SVGProps<SVGSVGElement> {
@@ -18,11 +19,10 @@ export function LogoIcon({ width = 24, height = 24, ...props }: LogoIconProps) {
       strokeLinejoin="round"
       {...props}
     >
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
-      <path d="m12 14-4-2 4-2 4 2-4 2Z" />
-      <path d="M12 14v4" />
-      <path d="m10 12-2-1" />
-      <path d="m14 12 2-1" />
+      {/* Compass-like design */}
+      <circle cx="12" cy="12" r="10" />
+      <polygon points="12 2 10 10 2 12 10 14 12 22 14 14 22 12 14 10" />
+      <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }

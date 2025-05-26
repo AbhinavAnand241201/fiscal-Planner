@@ -1,188 +1,248 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, TrendingUp, PiggyBank } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import type { ChartDataPoint } from "@/types";
+import { ArrowRight, BarChart2, ShieldCheck, Lightbulb, Users, Zap, TrendingUp, PiggyBank, Goal } from "lucide-react";
+import Image from "next/image";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const MOCK_BUDGET_DATA: ChartDataPoint[] = [
-  { name: 'Groceries', value: 400 },
-  { name: 'Transport', value: 150 },
-  { name: 'Entertainment', value: 200 },
-  { name: 'Utilities', value: 250 },
-  { name: 'Savings', value: 300 },
-];
+// Helper for scroll animations (simplified for CSS-driven approach)
+const useScrollAnimate = (id: string, threshold: number = 0.1) => {
+  useEffect(() => {
+    const element = document.getElementById(id);
+    if (!element) return;
 
-const MOCK_SPENDING_TREND_DATA: ChartDataPoint[] = [
-  { name: 'Jan', value: 1200 },
-  { name: 'Feb', value: 1100 },
-  { name: 'Mar', value: 1350 },
-  { name: 'Apr', value: 1250 },
-  { name: 'May', value: 1400 },
-  { name: 'Jun', value: 1300 },
-];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-fadeInUp");
+            observer.unobserve(entry.target); // Animate only once
+          }
+        });
+      },
+      { threshold }
+    );
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']; // These will be picked up by theme if not overridden by chart specific colors
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [id, threshold]);
+};
 
-export default function DashboardPage() {
+
+export default function LandingPage() {
+  useScrollAnimate("hero-section");
+  useScrollAnimate("features-section");
+  useScrollAnimate("how-it-works-section");
+  useScrollAnimate("testimonials-section");
+  useScrollAnimate("cta-section");
+
   const [currentDate, setCurrentDate] = useState('');
 
   useEffect(() => {
     setCurrentDate(new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
   }, []);
 
+
   return (
-    <div className="space-y-6">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Welcome to Fiscal Compass</h1>
-        {currentDate && <p className="text-muted-foreground">{currentDate}</p>}
-      </header>
-
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="shadow-lg card-hover-animation">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Budget Progress</CardTitle>
-            <PiggyBank className="h-5 w-5 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$1,250 / $2,000</div>
-            <p className="text-xs text-muted-foreground">+15% from last month</p>
-            {/* Placeholder for progress bar */}
-            <div className="mt-2 h-2 w-full bg-muted rounded-full">
-              <div className="h-2 bg-primary rounded-full" style={{ width: `${(1250/2000)*100}%`}}></div>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-background via-muted to-background text-foreground">
+      {/* Hero Section */}
+      <section id="hero-section" className="py-20 md:py-32 bg-primary text-primary-foreground opacity-0 transition-opacity duration-1000 ease-in-out">
+        <div className="container mx-auto px-6 text-center">
+          <div className="max-w-3xl mx-auto">
+            <LogoIcon className="h-20 w-20 mx-auto mb-6 text-accent animate-pulse" />
+            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
+              Navigate Your Financial Future with <span className="text-accent">Fiscal Compass</span>
+            </h1>
+            <p className="text-xl md:text-2xl mb-10 text-primary-foreground/90">
+              Smart budgeting, AI-powered advice, and effortless expense tracking. Take control of your money today.
+            </p>
+            <div className="space-x-4">
+              <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-4 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform" asChild>
+                <Link href="/spending">Get Started <ArrowRight className="ml-2 h-5 w-5" /></Link>
+              </Button>
+              <Button size="lg" variant="outline" className="text-lg py-4 px-8 rounded-full border-accent text-accent hover:bg-accent/10 shadow-lg transform hover:scale-105 transition-transform">
+                Learn More
+              </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="mt-16 relative">
+            <Image
+              src="https://placehold.co/1200x600.png?text=App+Screenshot+Dashboard"
+              alt="Fiscal Compass Dashboard"
+              width={1200}
+              height={600}
+              className="rounded-xl shadow-2xl mx-auto border-4 border-accent/30"
+              priority
+              data-ai-hint="dashboard finance app"
+            />
+            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-accent/20 rounded-full blur-2xl animate-blob animation-delay-2000"></div>
+            <div className="absolute -top-8 -right-8 w-32 h-32 bg-primary/30 rounded-full blur-2xl animate-blob animation-delay-4000"></div>
+          </div>
+        </div>
+      </section>
 
-        <Card className="shadow-lg card-hover-animation">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Recent Spending Alert</CardTitle>
-            <TrendingUp className="h-5 w-5 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">High: Dining Out</div>
-            <p className="text-xs text-muted-foreground">You've spent $250 on dining this week.</p>
-             <Button variant="link" size="sm" className="p-0 h-auto mt-1" asChild>
-              <Link href="/spending">View Details <ArrowRight className="ml-1 h-4 w-4" /></Link>
-            </Button>
-          </CardContent>
-        </Card>
-        
-        <Card className="shadow-lg card-hover-animation md:col-span-2 lg:col-span-1">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">AI Financial Tip</CardTitle>
-            <SparklesIcon className="h-5 w-5 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm">Consider automating your savings to reach your goals faster.</p>
-            <Button variant="default" size="sm" className="mt-2 bg-accent hover:bg-accent/90 text-accent-foreground" asChild>
-              <Link href="/advisor">Get Personalized Advice <ArrowRight className="ml-1 h-4 w-4" /></Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Features Section */}
+      <section id="features-section" className="py-16 md:py-24 bg-background opacity-0 transition-opacity duration-1000 ease-in-out delay-200">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center mb-4 text-primary">Why Fiscal Compass?</h2>
+          <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
+            We provide the tools and insights you need to achieve financial clarity and freedom.
+          </p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { icon: PiggyBank, title: "Smart Budgeting", description: "Visualize weekly, monthly, and yearly budgets with clear progress.", dataAiHint: "piggy bank savings" },
+              { icon: Lightbulb, title: "AI Financial Advisor", description: "Personalized advice based on your spending and goals, powered by Gemini.", dataAiHint: "idea lightbulb" },
+              { icon: TrendingUp, title: "Spending Tracker", description: "Automatically track and categorize your expenses with ease.", dataAiHint: "analytics chart" },
+              { icon: Goal, title: "Goal Setting", description: "Define and track your financial goals, from saving for a vacation to a down payment.", dataAiHint: "target goal" },
+              { icon: Zap, title: "Budget Alerts", description: "Customized limits to prevent overspending with real-time alerts.", dataAiHint: "notification bell" },
+              { icon: BarChart2, title: "Interactive Visualizations", description: "Understand your data with beautiful, interactive charts and graphs.", dataAiHint: "data visualization" },
+            ].map((feature, index) => (
+              <Card key={index} className="bg-card shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 card-hover-animation">
+                <CardHeader className="flex flex-row items-center gap-4 pb-2">
+                  <div className="p-3 rounded-full bg-primary/10 text-primary">
+                    <feature.icon className="h-8 w-8" />
+                  </div>
+                  <CardTitle className="text-xl font-semibold">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                  <div className="mt-4 h-40 w-full relative overflow-hidden rounded-md">
+                     <Image src={`https://placehold.co/400x250.png`} alt={feature.title} layout="fill" objectFit="cover" data-ai-hint={feature.dataAiHint} />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* How It Works Section */}
+      <section id="how-it-works-section" className="py-16 md:py-24 bg-muted opacity-0 transition-opacity duration-1000 ease-in-out delay-400">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center mb-12 text-primary">Get Started in 3 Simple Steps</h2>
+          <div className="grid md:grid-cols-3 gap-8 md:gap-12 items-start">
+            {[
+              { step: 1, title: "Sign Up & Connect", description: "Create your account in minutes. Optionally link bank accounts for automated tracking (mock feature).", icon: Users, dataAiHint: "user profile" },
+              { step: 2, title: "Set Your Goals", description: "Define your budgets and financial aspirations. Tell us what you're working towards.", icon: ShieldCheck, dataAiHint: "financial planning" },
+              { step: 3, title: "Track & Optimize", description: "Log spending, get AI insights, and watch your financial health improve.", icon: ArrowRight, dataAiHint: "progress chart" },
+            ].map((item) => (
+              <div key={item.step} className="text-center p-6 bg-card rounded-lg shadow-lg card-hover-animation">
+                <div className="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent text-accent-foreground text-2xl font-bold">
+                  {item.step}
+                </div>
+                 <div className="p-3 rounded-full bg-primary/10 text-primary inline-block mb-4">
+                    <item.icon className="h-10 w-10" />
+                  </div>
+                <h3 className="text-2xl font-semibold mb-2 text-primary">{item.title}</h3>
+                <p className="text-muted-foreground">{item.description}</p>
+                <Image src={`https://placehold.co/300x200.png`} alt={item.title} width={300} height={200} className="mt-4 rounded-md mx-auto" data-ai-hint={item.dataAiHint} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card className="shadow-lg card-hover-animation">
-          <CardHeader>
-            <CardTitle>Spending by Category (Monthly)</CardTitle>
-            <CardDescription>Overview of your expenses this month.</CardDescription>
-          </CardHeader>
-          <CardContent className="h-[350px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={MOCK_BUDGET_DATA}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={100}
-                  fill="hsl(var(--chart-1))" /* Use theme variable */
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                >
-                  {MOCK_BUDGET_DATA.map((entry, index) => (
-                     <Cell key={`cell-${index}`} fill={`hsl(var(--chart-${(index % 5) + 1}))`} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  formatter={(value: number, name: string) => [`$${value.toFixed(2)}`, name]}
-                  contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)' }}
-                  itemStyle={{ color: 'hsl(var(--foreground))' }}
-                 />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+      {/* Testimonials Section (Mock) */}
+      <section id="testimonials-section" className="py-16 md:py-24 bg-background opacity-0 transition-opacity duration-1000 ease-in-out delay-600">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center mb-12 text-primary">Loved by Users</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { name: "Sarah L.", quote: "Fiscal Compass helped me finally understand where my money goes. The AI advisor is a game-changer!", avatarHint: "woman smiling" },
+              { name: "Mike B.", quote: "Setting and tracking budgets used to be a chore. Now it's simple and motivating. Highly recommend!", avatarHint: "man working" },
+              { name: "Jessica P.", quote: "I've achieved two of my financial goals faster than I thought possible, thanks to this app!", avatarHint: "person happy" },
+            ].map((testimonial, index) => (
+              <Card key={index} className="bg-card shadow-lg p-6 card-hover-animation">
+                <CardContent className="flex flex-col items-center text-center">
+                  <Image src={`https://placehold.co/80x80.png`} alt={testimonial.name} width={80} height={80} className="rounded-full mb-4 border-2 border-primary" data-ai-hint={testimonial.avatarHint} />
+                  <p className="text-muted-foreground italic mb-4">"{testimonial.quote}"</p>
+                  <p className="font-semibold text-primary">- {testimonial.name}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        <Card className="shadow-lg card-hover-animation">
-          <CardHeader>
-            <CardTitle>Spending Trend (Last 6 Months)</CardTitle>
-            <CardDescription>Your spending habits over time.</CardDescription>
-          </CardHeader>
-          <CardContent className="h-[350px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={MOCK_SPENDING_TREND_DATA}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))"/>
-                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />
-                <YAxis tickFormatter={(value) => `$${value}`} stroke="hsl(var(--muted-foreground))" />
-                <Tooltip 
-                  formatter={(value: number) => [`$${value.toFixed(2)}`, "Spending"]}
-                  contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: 'var(--radius)' }}
-                  itemStyle={{ color: 'hsl(var(--foreground))' }}
-                />
-                <Legend />
-                <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card className="shadow-lg card-hover-animation">
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-wrap gap-4">
-          <Button asChild variant="outline">
-            <Link href="/spending">Track New Expense</Link>
+      {/* Call to Action Section */}
+      <section id="cta-section" className="py-20 md:py-32 bg-gradient-to-r from-primary to-blue-700 text-primary-foreground opacity-0 transition-opacity duration-1000 ease-in-out delay-800">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Master Your Money?</h2>
+          <p className="text-xl md:text-2xl mb-10 max-w-2xl mx-auto text-primary-foreground/90">
+            Join Fiscal Compass today and start your journey towards financial empowerment.
+          </p>
+          <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground text-xl py-4 px-10 rounded-full shadow-xl transform hover:scale-105 transition-transform" asChild>
+            <Link href="/spending">Sign Up For Free <ArrowRight className="ml-2 h-6 w-6" /></Link>
           </Button>
-          <Button asChild variant="outline">
-            <Link href="/budgets">Manage Budgets</Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link href="/payments">Make a Payment</Link>
-          </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 bg-background border-t border-border">
+        <div className="container mx-auto px-6 text-center text-muted-foreground">
+          <div className="flex justify-center items-center gap-2 mb-2">
+            <LogoIcon className="h-6 w-6 text-primary" />
+            <p className="font-semibold text-primary">Fiscal Compass</p>
+          </div>
+          <p>&copy; {new Date().getFullYear()} Fiscal Compass. All rights reserved.</p>
+          <p className="text-xs mt-1">Your smart financial companion.</p>
+          {currentDate && <p className="text-xs mt-2">Today is {currentDate}</p>}
+        </div>
+      </footer>
+
+      {/* CSS for animations - simplified */}
+      <style jsx global>{`
+        .opacity-0 { opacity: 0; }
+        .animate-fadeInUp {
+          animation: fadeInUp 1s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-pulse {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        @keyframes blob {
+          0% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+          100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+      `}</style>
     </div>
   );
 }
 
-function SparklesIcon(props: React.SVGProps<SVGSVGElement>) {
+// Basic Logo Icon (can be replaced with a more elaborate one if needed)
+function LogoIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
       viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      fill="currentColor" // Changed to fill for solid color
+      stroke="none"    // No stroke for solid fill
     >
-      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-      <path d="M5 3v4" />
-      <path d="M19 17v4" />
-      <path d="M3 5h4" />
-      <path d="M17 19h4" />
+      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path> {/* Simplified compass-like shape */}
     </svg>
-  )
+  );
 }
