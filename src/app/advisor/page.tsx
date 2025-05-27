@@ -5,18 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-<<<<<<< HEAD
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Loader2, Lightbulb, DollarSign, CheckCircle, Info, MessageSquareQuote } from "lucide-react";
-=======
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Lightbulb, DollarSign, Target, TrendingUp, Calendar } from "lucide-react";
->>>>>>> origin/master
-import { provideFinancialAdvice, type FinancialAdviceInput, type FinancialAdviceOutput } from "@/ai/flows/provide-financial-advice";
+import { provideFinancialAdvice, type FinancialAdviceInput } from "@/ai/flows/provide-financial-advice";
 import { useToast } from "@/hooks/use-toast";
 import ErrorBoundary from "@/components/error-boundary";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 
 interface AdvisorFormProps {
   onSubmit: (input: FinancialAdviceInput) => Promise<void>;
@@ -50,7 +46,7 @@ function AdvisorForm({ onSubmit, isLoading }: AdvisorFormProps) {
     <Card className="shadow-lg card-hover-animation">
       <CardHeader>
         <CardTitle>Tell Us About Yourself</CardTitle>
-        <CardDescription>The more details you provide, the better the advice.</CardDescription>
+        <CardDescription>The more details you provide, the better the advice. Be specific with amounts and categories for spending, and clear about your goals.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -60,7 +56,7 @@ function AdvisorForm({ onSubmit, isLoading }: AdvisorFormProps) {
               id="spendingPatterns"
               value={formData.spendingPatterns}
               onChange={handleChange("spendingPatterns")}
-              placeholder="Describe your typical monthly spending. E.g., 'I spend $500 on rent, $300 on groceries, $100 on dining out, $50 on subscriptions...'"
+              placeholder="E.g., 'Monthly spending: Rent $1200, Groceries $450, Transport $150, Dining Out $250, Subscriptions (Netflix, Spotify) $30, Gym $50. I also spend about $100 on hobbies.'"
               rows={5}
               className="mt-1 text-base"
               required
@@ -72,7 +68,7 @@ function AdvisorForm({ onSubmit, isLoading }: AdvisorFormProps) {
               id="financialGoals"
               value={formData.financialGoals}
               onChange={handleChange("financialGoals")}
-              placeholder="What are your financial goals? E.g., 'Save for a down payment on a house in 5 years, pay off student loans, build an emergency fund...'"
+              placeholder="E.g., '1. Save $10,000 for a house down payment in 2 years. 2. Pay off $3,000 in credit card debt (18% APR) within 1 year. 3. Build a 3-month emergency fund ($6,000).'"
               rows={5}
               className="mt-1 text-base"
               required
@@ -81,10 +77,10 @@ function AdvisorForm({ onSubmit, isLoading }: AdvisorFormProps) {
           <Button type="submit" disabled={isLoading} className="w-full md:w-auto bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-3 px-6">
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Generating Plan...
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Generating Advice...
               </>
             ) : (
-              "Generate Financial Plan"
+              "Get Financial Advice"
             )}
           </Button>
         </form>
@@ -135,17 +131,17 @@ function FinancialPlan({ adviceResult }: FinancialPlanProps) {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {adviceResult.spendingAnalysis.categories.map((category, index) => (
+                {adviceResult.spendingAnalysis.map(({ category, percentage, amount }, index: number) => (
                   <div key={index} className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="font-medium">{category.category}</span>
+                      <span className="font-medium">{category}</span>
                       <span className="text-muted-foreground">
-                        ${category.currentAmount} → ${category.recommendedAmount}
+                        ${amount}
                       </span>
                     </div>
-                    <Progress value={category.percentageChange} className="h-2" />
+                    <Progress value={percentage} className="h-2" />
                     <p className="text-sm text-muted-foreground">
-                      {category.percentageChange > 0 ? "Increase" : "Decrease"} by {Math.abs(category.percentageChange)}%
+                      {percentage > 0 ? "Increase" : "Decrease"} by {Math.abs(percentage)}%
                     </p>
                   </div>
                 ))}
@@ -161,14 +157,13 @@ function FinancialPlan({ adviceResult }: FinancialPlanProps) {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {adviceResult.actionSteps.map((step, index) => (
+                {adviceResult.actionSteps.map(({ step, priority }, index: number) => (
                   <div key={index} className="flex items-start gap-4">
-                    <Badge variant={getPriorityColor(step.priority)} className="mt-1">
-                      {step.priority}
+                    <Badge variant={getPriorityColor(priority)} className="mt-1">
+                      {priority}
                     </Badge>
                     <div>
-                      <h4 className="font-medium">{step.title}</h4>
-                      <p className="text-sm text-muted-foreground">{step.description}</p>
+                      <h4 className="font-medium">{step}</h4>
                     </div>
                   </div>
                 ))}
@@ -187,13 +182,13 @@ function FinancialPlan({ adviceResult }: FinancialPlanProps) {
                 <div>
                   <h3 className="font-medium mb-2">Short-term Investments</h3>
                   <div className="space-y-4">
-                    {adviceResult.investmentPlan.shortTerm.map((investment, index) => (
+                    {adviceResult.investmentPlan.map(({ type, allocation, risk, description }, index) => (
                       <div key={index} className="flex justify-between items-center">
                         <div>
-                          <p className="font-medium">{investment.type}</p>
-                          <p className="text-sm text-muted-foreground">{investment.reason}</p>
+                          <p className="font-medium">{type}</p>
+                          <p className="text-sm text-muted-foreground">{description}</p>
                         </div>
-                        <span className="font-medium">${investment.amount}</span>
+                        <span className="font-medium">{allocation}%</span>
                       </div>
                     ))}
                   </div>
@@ -201,13 +196,13 @@ function FinancialPlan({ adviceResult }: FinancialPlanProps) {
                 <div>
                   <h3 className="font-medium mb-2">Long-term Investments</h3>
                   <div className="space-y-4">
-                    {adviceResult.investmentPlan.longTerm.map((investment, index) => (
+                    {adviceResult.investmentPlan.map(({ type, allocation, risk, description }, index) => (
                       <div key={index} className="flex justify-between items-center">
                         <div>
-                          <p className="font-medium">{investment.type}</p>
-                          <p className="text-sm text-muted-foreground">{investment.reason}</p>
+                          <p className="font-medium">{type}</p>
+                          <p className="text-sm text-muted-foreground">{description}</p>
                         </div>
-                        <span className="font-medium">${investment.amount}</span>
+                        <span className="font-medium">{allocation}%</span>
                       </div>
                     ))}
                   </div>
@@ -224,20 +219,20 @@ function FinancialPlan({ adviceResult }: FinancialPlanProps) {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {adviceResult.progressTracking.milestones.map((milestone, index) => (
+                {adviceResult.progressTracking.map(({ milestone, targetDate, status, progress }, index) => (
                   <div key={index} className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="font-medium">{milestone.milestone}</span>
+                      <span className="font-medium">{milestone}</span>
                       <span className="text-muted-foreground">
-                        Target: ${milestone.targetAmount} by {milestone.targetDate}
+                        Target: {targetDate}
                       </span>
                     </div>
                     <Progress 
-                      value={(milestone.currentAmount / milestone.targetAmount) * 100} 
+                      value={(progress / 100) * 100} 
                       className="h-2" 
                     />
                     <p className="text-sm text-muted-foreground">
-                      Current: ${milestone.currentAmount} ({(milestone.currentAmount / milestone.targetAmount * 100).toFixed(1)}% of target)
+                      Current: {progress}%
                     </p>
                   </div>
                 ))}
@@ -250,18 +245,58 @@ function FinancialPlan({ adviceResult }: FinancialPlanProps) {
   );
 }
 
+interface FinancialAdviceOutput {
+  advice: string;
+  investmentSuggestions: string;
+  budgetingTips: string;
+  summary: string;
+  spendingAnalysis: Array<{
+    category: string;
+    percentage: number;
+    amount: number;
+  }>;
+  actionSteps: Array<{
+    step: string;
+    priority: 'high' | 'medium' | 'low';
+  }>;
+  investmentPlan: Array<{
+    type: string;
+    allocation: number;
+    risk: 'low' | 'medium' | 'high';
+    description: string;
+  }>;
+  progressTracking: Array<{
+    milestone: string;
+    targetDate: string;
+    status: 'pending' | 'in-progress' | 'completed';
+    progress: number;
+  }>;
+}
+
 export default function AdvisorPage() {
   const [adviceResult, setAdviceResult] = useState<FinancialAdviceOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState<FinancialAdviceInput>({
+    spendingPatterns: '',
+    financialGoals: ''
+  });
   const { toast } = useToast();
 
-  const handleSubmit = async (input: FinancialAdviceInput) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setIsLoading(true);
     setAdviceResult(null);
 
     try {
-      const result = await provideFinancialAdvice(input);
-      setAdviceResult(result);
+      const result = await provideFinancialAdvice(formData);
+      setAdviceResult({
+        ...result,
+        summary: result.advice.split('\n')[0], // Use first line of advice as summary
+        spendingAnalysis: [], // These will be populated by the AI
+        actionSteps: [],
+        investmentPlan: [],
+        progressTracking: []
+      });
       toast({
         title: "Advice Generated!",
         description: "Your personalized financial plan is ready.",
@@ -278,46 +313,55 @@ export default function AdvisorPage() {
     }
   };
 
+  const handleChange = (field: keyof FinancialAdviceInput) => (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: e.target.value
+    }));
+  };
+
   return (
-<<<<<<< HEAD
+    <ErrorBoundary>
     <div className="space-y-8">
       <header>
         <h1 className="text-3xl font-bold">AI Financial Advisor</h1>
-        <p className="text-muted-foreground">Get personalized financial advice powered by AI. Break down complex goals into simple steps.</p>
+          <p className="text-muted-foreground">Get personalized financial advice powered by AI. Break down complex goals into simple steps.</p>
       </header>
 
       <Card className="shadow-lg card-hover-animation">
         <CardHeader>
           <CardTitle>Tell Us About Yourself</CardTitle>
-          <CardDescription>The more details you provide, the better the advice. Be specific with amounts and categories for spending, and clear about your goals.</CardDescription>
+            <CardDescription>The more details you provide, the better the advice. Be specific with amounts and categories for spending, and clear about your goals.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-4">
             <div>
-              <Label htmlFor="spendingPatterns" className="text-lg">Your Spending Patterns</Label>
-              <Textarea
-                id="spendingPatterns"
-                value={spendingPatterns}
-                onChange={(e) => setSpendingPatterns(e.target.value)}
-                placeholder="E.g., 'Monthly spending: Rent $1200, Groceries $450, Transport $150, Dining Out $250, Subscriptions (Netflix, Spotify) $30, Gym $50. I also spend about $100 on hobbies.'"
+                  <Label htmlFor="spending-patterns">Your Spending Patterns</Label>
+                  <textarea
+                    id="spending-patterns"
+                    value={formData.spendingPatterns}
+                    onChange={handleChange("spendingPatterns")}
+                    placeholder="E.g., 'Monthly spending: Rent $1200, Groceries $450, Transport $150, Dining Out $250, Subscriptions (Netflix, Spotify) $30, Gym $50. I also spend about $100 on hobbies.'"
                 rows={5}
                 className="mt-1 text-base"
-                required
               />
             </div>
             <div>
-              <Label htmlFor="financialGoals" className="text-lg">Your Financial Goals</Label>
-              <Textarea
-                id="financialGoals"
-                value={financialGoals}
-                onChange={(e) => setFinancialGoals(e.target.value)}
-                placeholder="E.g., '1. Save $10,000 for a house down payment in 2 years. 2. Pay off $3,000 in credit card debt (18% APR) within 1 year. 3. Build a 3-month emergency fund ($6,000).'"
+                  <Label htmlFor="financial-goals">Your Financial Goals</Label>
+                  <textarea
+                    id="financial-goals"
+                    value={formData.financialGoals}
+                    onChange={handleChange("financialGoals")}
+                    placeholder="E.g., '1. Save $10,000 for a house down payment in 2 years. 2. Pay off $3,000 in credit card debt (18% APR) within 1 year. 3. Build a 3-month emergency fund ($6,000).'"
                 rows={5}
                 className="mt-1 text-base"
-                required
               />
             </div>
-            <Button type="submit" disabled={isLoading} className="w-full md:w-auto bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-3 px-6">
+              </div>
+              <Button type="submit" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Generating Advice...
@@ -330,109 +374,46 @@ export default function AdvisorPage() {
         </CardContent>
       </Card>
 
-      {isLoading && (
-        <Card className="shadow-md mt-8">
-          <CardContent className="pt-6 text-center">
-            <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
-            <p className="text-lg text-muted-foreground">Our AI is crafting your personalized advice... this might take a moment.</p>
-          </CardContent>
-        </Card>
-      )}
+      {adviceResult && (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Financial Summary</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{adviceResult.summary}</p>
+              </CardContent>
+            </Card>
 
-      {adviceResult && !isLoading && (
-        <div className="space-y-6 mt-8">
-          <Card className="shadow-md border-l-4 border-primary card-hover-animation">
-            <CardHeader className="flex flex-row items-center gap-3">
-              <Info className="h-8 w-8 text-primary" />
-              <CardTitle className="text-2xl">Overall Summary</CardTitle>
+            <Card>
+              <CardHeader>
+                <CardTitle>Action Steps</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-base leading-relaxed whitespace-pre-wrap">{adviceResult.overallSummary}</p>
+                <p className="text-muted-foreground">{adviceResult.advice}</p>
             </CardContent>
           </Card>
 
-          {adviceResult.actionableAdvice && adviceResult.actionableAdvice.length > 0 && (
-            <Card className="shadow-md border-l-4 border-accent card-hover-animation">
-              <CardHeader className="flex flex-row items-center gap-3">
-                <Lightbulb className="h-8 w-8 text-accent" />
-                <CardTitle className="text-2xl">Actionable Advice</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Accordion type="single" collapsible className="w-full" defaultValue={`item-0`}>
-                  {adviceResult.actionableAdvice.map((section, index) => (
-                    <AccordionItem value={`item-${index}`} key={index}>
-                      <AccordionTrigger className="text-xl font-semibold hover:no-underline">
-                        {section.title}
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="list-disc space-y-3 pl-5 text-base">
-                          {section.points.map((point, pIndex) => (
-                            <li key={pIndex} className="leading-relaxed whitespace-pre-wrap">{point}</li>
-                          ))}
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </CardContent>
-            </Card>
-          )}
+            <Card>
+              <CardHeader>
+                <CardTitle>Investment Suggestions</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p className="text-muted-foreground">{adviceResult.investmentSuggestions}</p>
+            </CardContent>
+          </Card>
 
-          {adviceResult.investmentSuggestions && adviceResult.investmentSuggestions.points.length > 0 && (
-            <Card className="shadow-md border-l-4 border-green-500 card-hover-animation">
-              <CardHeader className="flex flex-row items-center gap-3">
-                <DollarSign className="h-8 w-8 text-green-500" />
-                <CardTitle className="text-2xl">{adviceResult.investmentSuggestions.title || "Investment Suggestions"}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                 <ul className="list-disc space-y-3 pl-5 text-base">
-                    {adviceResult.investmentSuggestions.points.map((point, pIndex) => (
-                      <li key={pIndex} className="leading-relaxed whitespace-pre-wrap">{point}</li>
-                    ))}
-                  </ul>
-              </CardContent>
-            </Card>
-          )}
-
-          {adviceResult.keyTakeaways && adviceResult.keyTakeaways.length > 0 && (
-            <Card className="shadow-md border-l-4 border-blue-500 card-hover-animation">
-              <CardHeader className="flex flex-row items-center gap-3">
-                <MessageSquareQuote className="h-8 w-8 text-blue-500" />
-                <CardTitle className="text-2xl">Key Takeaways & Quotes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  {adviceResult.keyTakeaways.map((takeaway, index) => (
-                    <li key={index} className="text-base italic leading-relaxed p-4 bg-blue-500/10 rounded-lg shadow">
-                      "{takeaway}"
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          )}
+            <Card>
+              <CardHeader>
+                <CardTitle>Budgeting Tips</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p className="text-muted-foreground">{adviceResult.budgetingTips}</p>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>
-=======
-    <ErrorBoundary>
-      <div className="space-y-8">
-        <header>
-          <h1 className="text-3xl font-bold">AI Financial Advisor</h1>
-          <p className="text-muted-foreground">Get your personalized financial plan with visual insights.</p>
-        </header>
-
-        <Suspense fallback={<div>Loading...</div>}>
-          <AdvisorForm onSubmit={handleSubmit} isLoading={isLoading} />
-        </Suspense>
-
-        {adviceResult && (
-          <Suspense fallback={<div>Loading financial plan...</div>}>
-            <FinancialPlan adviceResult={adviceResult} />
-          </Suspense>
-        )}
-      </div>
     </ErrorBoundary>
->>>>>>> origin/master
   );
 }
